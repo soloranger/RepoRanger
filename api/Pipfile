@@ -29,6 +29,8 @@ watchdog = "*"
 werkzeug = "==3.0.3"
 
 [dev-packages]
+black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.10"
