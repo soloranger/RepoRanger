@@ -1,6 +1,6 @@
 from flask import Flask
 
-from .view.v1 import api_bp as apiv1_bp
+from .view import apiv1_bp
 
 
 def create_app():
