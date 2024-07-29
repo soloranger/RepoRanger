@@ -1,15 +1,17 @@
+from util.jsonify import jsonify
+
 class RepositoryController:
     def get_repositories():
-        return {"ping": "pong"}
+        return jsonify(status=501, code=101)
     
     def get_repository(repository_id):
-        return {"ping": "pong"}
+        return jsonify(status=501, code=101)
     
     def create_repository():
-        return {"ping": "pong"}
+        return jsonify(status=501, code=101)
     
     def update_repository(repository_id):
-        return {"ping": "pong"}
+        return jsonify(status=501, code=101)
     
     def delete_repository(repository_id):
-        return {"ping": "pong"}
+        return jsonify(status=501, code=101)
