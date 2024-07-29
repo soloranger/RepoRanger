@@ -1,5 +1,7 @@
 from flask_restful import Resource
+
 from api.controller.v1 import RepositoryController
+
 
 class RepositoryResource(Resource):
     def get(self, repository_id=None):
@@ -16,11 +18,11 @@ class RepositoryResource(Resource):
         return RepositoryController.create_repository()
 
     def patch(self, repository_id):
-        # PATCH /api/v1/repositories -> Not Allowd 
+        # PATCH /api/v1/repositories -> Not Allowd
         # PATCH /api/v1/repositories/<repository_id> -> Update an existing repository
         return RepositoryController.update_repository(repository_id)
 
     def delete(self, repository_id):
-        # DELETE /api/v1/repositories -> Not Allowd 
-        # DELETE /api/v1/repositories/<repository_id> -> Delete  an existing repository        
+        # DELETE /api/v1/repositories -> Not Allowd
+        # DELETE /api/v1/repositories/<repository_id> -> Delete  an existing repository
         return RepositoryController.delete_repository(repository_id)
