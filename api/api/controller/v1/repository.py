@@ -1,4 +1,4 @@
-from util.jsonify import jsonify
+from api.util import jsonify
 
 class RepositoryController:
     def get_repositories():
