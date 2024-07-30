@@ -27,6 +27,10 @@ tomli = "==2.0.1"
 typing-extensions = "==4.12.2"
 watchdog = "*"
 werkzeug = "==3.0.3"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+pymysql = "*"
+cryptography = "*"
 
 [dev-packages]
 black = "*"
