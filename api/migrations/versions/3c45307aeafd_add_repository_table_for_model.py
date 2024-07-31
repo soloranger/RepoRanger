@@ -1,8 +1,8 @@
-"""empty message
+"""Add Repository Table for Model
 
-Revision ID: 885e9474fd51
+Revision ID: 3c45307aeafd
 Revises: 
-Create Date: 2024-07-31 22:48:10.931528
+Create Date: 2024-07-31 22:56:14.370749
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '885e9474fd51'
+revision = '3c45307aeafd'
 down_revision = None
 branch_labels = None
 depends_on = None
