@@ -31,6 +31,9 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 pymysql = "*"
 cryptography = "*"
+marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask-marshmallow = "*"
 
 [dev-packages]
 black = "*"
