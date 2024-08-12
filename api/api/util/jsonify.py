@@ -3,6 +3,7 @@ from flask import current_app
 APP_CODES = {
     100: "OK.",
     101: "Feature is not implemented.",
+    102
 }
 
 
