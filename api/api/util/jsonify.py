@@ -6,7 +6,7 @@ APP_CODES = {
     102: "Database error",
     103: "Schema instance error",
     104: "Input Validation error",
-    105:  "Resource Not Found",
+    105: "Resource Not Found",
 }
 
 

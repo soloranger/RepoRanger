@@ -13,4 +13,4 @@ class RepositorySchema(ma.SQLAlchemySchema):
     )  # if we dont set anything => also can see it and can Modify it
     created_at = ma.auto_field(dump_only=True)
     last_updated_at = ma.auto_field(dump_only=True)
-    status = ma.auto_field(dump_only=True)
+    status = ma.auto_field()

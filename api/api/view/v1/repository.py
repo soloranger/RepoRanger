@@ -1,6 +1,5 @@
-from flask_restful import Resource
-
 from api.controller.v1 import RepositoryController
+from flask_restful import Resource
 
 
 class RepositoryResource(Resource):
