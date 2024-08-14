@@ -38,6 +38,9 @@ flask-marshmallow = "*"
 [dev-packages]
 black = "*"
 isort = "*"
+pytest = "*"
+pytest-order = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.10"
