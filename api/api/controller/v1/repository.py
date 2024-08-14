@@ -1,9 +1,9 @@
+from flask import request
+
 from api.model import Repository
 from api.object import db
 from api.schema.v1 import RepositorySchema
 from api.util import jsonify, now
-from flask import request
-
 
 
 class RepositoryController:
@@ -34,7 +34,7 @@ class RepositoryController:
 
     def create_repository():
         try:
-            repository_schema = RepositorySchema(partial=True)
+            repository_schema = RepositorySchema(only=["url"])
         except:
             return jsonify(status=500, code=103)
         try:
@@ -49,6 +49,11 @@ class RepositoryController:
         except:
             db.session.rollback()
             return jsonify(status=500, code=102)
+
+        try:
+            repository_schema = RepositorySchema()
+        except:
+            return jsonify(status=500, code=103)
         return jsonify(repository_schema.dump(repository), status=201)
 
     def update_repository(repository_id):
@@ -58,7 +63,7 @@ class RepositoryController:
             return jsonify(status=500, code=102)
         if repository is None:
             return jsonify(status=404, code=105)
-        
+
         try:
             repository_schema = RepositorySchema(only=["status"])
         except:
@@ -79,8 +84,22 @@ class RepositoryController:
             repository_schema = RepositorySchema(only=["status"])
         except:
             return jsonify(status=500, code=103)
-        
+
         return jsonify(repository_schema.dump(repository), status=200)
-        
+
     def delete_repository(repository_id):
-        return jsonify(status=501, code=101)
+        try:
+            repository = Repository.query.get(repository_id)
+        except:
+            return jsonify(status=500, code=102)
+        if repository is None:
+            return jsonify(status=404, code=105)
+        if repository.status in ["ACCEPTED", "PROCESSING"]:
+            return jsonify(status=412, code=106)
+        db.session.delete(repository)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return jsonify(status=500, code=102)
+        return jsonify(state=200, code=100)

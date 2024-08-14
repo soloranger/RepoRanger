@@ -7,6 +7,7 @@ APP_CODES = {
     103: "Schema instance error",
     104: "Input Validation error",
     105: "Resource Not Found",
+    106: "Resource Busy. ",
 }
 
 

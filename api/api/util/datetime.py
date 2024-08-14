@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from api.config import Config
 from pytz import timezone
+
+from api.config import Config
 
 
 def now():
