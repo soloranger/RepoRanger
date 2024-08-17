@@ -1,0 +1,9 @@
+[tool.coverage.run]
+source = ["api"]
+command_line = "-m pytest"
+branch = true
+
+
+[tool.pytest.ini_options]
+testpaths = ["api"]
+addopts = "-v"
