@@ -10,8 +10,8 @@ class Config:
 
     SECRET_KEY = environ.get("REPORANGER_API_SECRET_KEY", "secretkey")
 
-    SQLALCHEMY_DATABASE_URI = environ.get("REPORANGER_API_DATABASE_URL", None)
-
+    SQLALCHEMY_DATABASE_URI = environ.get("REPORANGER_API_DATABASE_URI", None)
+    #export REPORANGER_API_DATABASE_URI=mysql+pymysql://root:root@localhost:3306/test
     SQLALCHEMY_ECHO = DEBUG
 
     SQLALCHEMY_RECORD_QUERIES = DEBUG
