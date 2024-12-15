@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: reporanger-api-mysql-secret
+  labels:
+    app.k8s.io/name: reporanger-api
+    app.k8s.io/part-of: reporanger-api 
+    app.k8s.io/part-of: reporanger    
+stringData:
+  MYSQL_ROOT_PASSWORD: hardrootpassword
+  MYSQL_DATABASE: reporanger_api
+  MYSQL_USER: reporanger-api
+  MYSQL_PASSWORD: reporanger-api
+  REPORANGER_API_SECRET_KEY: superhardsecret
+  REPORANGER_API_DATABASE_URI: "mysql+pymysql://reporenger-api:reporenger-api@reporanger-api-mysql:3306/reporanger-api"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reporanger-api-mysql
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app.k8s.io/name: reporanger-api-mysql
+    app.k8s.io/part-of: reporanger 
+  ports:
+  - name: http
+    port: 3306
+---
