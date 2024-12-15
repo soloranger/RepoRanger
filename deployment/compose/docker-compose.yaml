@@ -1,0 +1,86 @@
+version: '3'
+services:
+  api:
+    image: reporanger:latest
+    build: ../../api
+    pull_policy: build
+    restart: unless-stopped
+    depends_on:
+      api-migration:
+        condition: service_completed_successfully       
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - 8000:8000/tcp
+    networks:
+      - edge
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "kill -1 1"]  
+      interval: 10s
+      timeout: 1s 
+      retries: 2   
+    labels:
+      - "me.mahdishadi.app-name=api"
+      - "me.mahdishadi.part-of=reporanger"
+      - "me.mahdishadi.type=app"
+  
+  
+  
+  api-migration:
+    image: reporanger:latest
+    build: ../../api
+    pull_policy: build
+    restart: "no"
+    command: ["flask","db","upgrade"]
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy  
+  
+    networks:
+      - db
+    labels:
+      - "me.mahdishadi.app-name=api"
+      - "me.mahdishadi.part-of=reporanger"
+      - "me.mahdishadi.type=job"
+  
+
+
+  
+  mysql:
+    image: mysql:8
+    pull_policy: always
+    restart: unless-stopped
+    env_file:
+      - .env    
+    expose:
+      - 3306/tcp
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL","mysqladmin ping -uroot -p$MYSQL_ROOT_PASSWORD"]  
+      interval: 10s
+      timeout: 1s 
+      retries: 2
+      start_period: 30s
+      start_interval: 2s
+
+    labels:
+      - "me.mahdishadi.app-name=mysql"
+      - "me.mahdishadi.part-of=reporanger"
+      - "me.mahdishadi.type=service"
+
+
+
+networks:
+  edge:
+  db:
+
+volumes:
+  mysql_data:

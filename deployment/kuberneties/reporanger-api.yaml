@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reporanger-api-config
+data:
+    REPORANGER_API_ENV: development
+    REPORANGER_API_DEBUG: "1"
+    REPORANGER_API_TESTING: "1"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: reporanger-api-secret
+stringData:
+  REPORANGER_API_SECRET_KEY: superhardsecret
+  REPORANGER_API_DATABASE_URI: "mysql+pymysql://root:root@mysql:3306/api"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reporanger-api
+spec:
+  type: ClusterIP
+  selector:
+    app.k8s.io/name: reporanger-api
+    app.k8s.io/part-of: reporanger 
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reporanger-api
+spec:
+  replicas: 3
+  selector:
+    machLabels:
+      pp.k8s.io/name: reporanger-api
+      app.k8s.io/part-of: reporanger 
+  template:
+    metadata:
+      labels:
+        app.k8s.io/name: reporanger-api
+        app.k8s.io/part-of: reporanger
+    spec:
+      containers:
+        - name: reporanger-api        
+          image: ssbostan/gitvisor-api:latest
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+              name: reporanger-api-config
+            - secretRef:
+              name: reporanger-api-secret
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reporanger-api
+spec:
+  rules:
+    - host: reporanger-api.20302040.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reporanger-api
+                port:
+                  name: http
