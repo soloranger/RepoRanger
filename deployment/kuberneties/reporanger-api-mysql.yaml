@@ -3,7 +3,7 @@ kind: Secret
 metadata:
   name: reporanger-api-mysql-secret
   labels:
-    app.k8s.io/name: reporanger-api
+    app.k8s.io/name: reporanger-api-mysql
     app.k8s.io/part-of: reporanger-api 
     app.k8s.io/part-of: reporanger    
 stringData:
@@ -11,20 +11,73 @@ stringData:
   MYSQL_DATABASE: reporanger_api
   MYSQL_USER: reporanger-api
   MYSQL_PASSWORD: reporanger-api
-  REPORANGER_API_SECRET_KEY: superhardsecret
-  REPORANGER_API_DATABASE_URI: "mysql+pymysql://reporenger-api:reporenger-api@reporanger-api-mysql:3306/reporanger-api"
----
+
+--- 
 apiVersion: v1
 kind: Service
 metadata:
   name: reporanger-api-mysql
+  labels:
+    app.k8s.io/name: reporanger-api-mysql
+    app.k8s.io/part-of: reporanger-api 
+    app.k8s.io/part-of: reporanger    
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
     app.k8s.io/name: reporanger-api-mysql
-    app.k8s.io/part-of: reporanger 
+    app.k8s.io/part-of: reporanger-api 
+    app.k8s.io/part-of: reporanger    
   ports:
-  - name: http
+  - name: mysql
     port: 3306
+
 ---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: reporanger-api-mysql
+  labels:
+    app.k8s.io/name: reporanger-api-mysql
+    app.k8s.io/part-of: reporanger-api 
+    app.k8s.io/part-of: reporanger   
+spec:
+  replicas: 1
+  selector:
+    matchLabels:    
+      app.k8s.io/name: reporanger-api-mysql
+      app.k8s.io/part-of: reporanger-api 
+      app.k8s.io/part-of: reporanger
+  serviceName: reporanger-api-mysql
+  template:
+    metadata:
+      labels:
+        app.k8s.io/name: reporanger-api-mysql
+        app.k8s.io/part-of: reporanger-api 
+        app.k8s.io/part-of: reporanger  
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          envFrom:
+            - secretRef:
+                name: reporanger-api-mysql-secret
+          volumeMounts:
+            - name: mysq;-data
+              mountPath: /var/lib/mysql
+          ports:
+            - name: mysql
+              containerPort: 3306    
+  volumeClaimTemplates:
+    - metadata:
+        name: reporanger-api-mysql-data       
+        labels:
+          app.k8s.io/name: reporanger-api-mysql
+          app.k8s.io/part-of: reporanger-api 
+          app.k8s.io/part-of: reporanger  
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
