@@ -13,4 +13,5 @@
  RUN addgroup app && adduser -h /dev/null -g app -s /bin/sh -G app -DH app
  USER 1000
 
+ CMD ["pipenv", "shell"]
  CMD ["pipenv","run","gunicorn"]
