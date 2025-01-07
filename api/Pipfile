@@ -34,6 +34,7 @@ cryptography = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 flask-marshmallow = "*"
+coverage = "*"
 
 [dev-packages]
 black = "*"
