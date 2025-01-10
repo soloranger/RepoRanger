@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    stages {
+        stage("Prapere"){
+            steps {
+                git(
+                    url:"https://github.com/soloranger/RepoRanger.git",
+                    branch: "main",
+                    credentialsId: "github"
+                
+                )
+            }
+        }
+        stage("Build"){
+            steps {
+                dir("api"){
+                    script {
+                        appImage = docker.build("reporanger-api:latest")    
+                    }
+                    
+                }
+            }
+            
+        }
+        stage("Test"){
+            steps {
+               script {
+                   docker.image("mysql:8").withRun(
+                       "-e MYSQL_ROOT_PASSWORD=test -e MYSQL_DATABASE=test --name ${BUILD_TAG}-mysql"
+                    ) { 
+                        retry(5){
+                            sleep(10)
+                            sh "docker exec ${BUILD_TAG}-mysql mysql -uroot -ptest -e 'select 1;'"
+                        }
+                        sh "docker run -d --rm --name ${BUILD_TAG}-app --link ${BUILD_TAG}-mysql -e REPORANGER_API_DEBUG=1 -e REPORANGER_API_ENV=test -e REPORANGER_API_DATABASE_URI=mysql+pymysql://root:test@${BUILD_TAG}-mysql:3306/test --entrypoint sleep ${appImage.id} infinity"
+                        warnError("Tests failed."){
+                            sh "docker exec ${BUILD_TAG}-app coverage run"
+                            }
+                            sh "docker exec ${BUILD_TAG}-app coverage html"
+                            sh "docker exec ${BUILD_TAG}-app coverage xml"
+                            sh "docker cp ${BUILD_TAG}-app:/opt/app/htmlcov ."
+                            sh "docker cp ${BUILD_TAG}-app:/opt/app/coverage.xml ."
+
+                        }
+               }
+            }
+            post {
+                always {
+                    sh "docker kill  ${BUILD_TAG}-app"
+                }
+            }
+
+        } 
+        stage("Report"){
+            steps {
+                archiveArtifacts(
+                    artifacts: "htmlcov/**.*, coverage.xml",
+                    followSymlinks: false,
+                    fingerprint: true,
+                    allowEmptyArchive: true
+                    )
+                    recordCoverage(sourceDirectories:[[path: 'api/api']],tools: [[parser: 'COBERTURA', pattern:'coverage.xml']])
+            }            
+            
+        }        
+    }
+    post {
+        always {
+            deleteDir()
+        }
+    }
+}
