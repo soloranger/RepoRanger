@@ -64,9 +64,6 @@ pipeline {
             
         }  
         stage("Trigger: Delivery Pipeline"){
-            when{
-                tag "release-*"
-            }
             steps{
                 script{
                     if (currentBuild.currentResult == "SUCCESS" ){
