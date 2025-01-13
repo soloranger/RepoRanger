@@ -62,7 +62,23 @@ pipeline {
                     recordCoverage(sourceDirectories:[[path: 'api/api']],tools: [[parser: 'COBERTURA', pattern:'coverage.xml']])
             }            
             
-        }        
+        }  
+        stage("Trigger: Delivery Pipeline"){
+            when{
+                tag "release-*"
+            }
+            steps{
+                script{
+                    if (currentBuild.currentResult == "SUCCESS" ){
+                        gitCommit = sh(script: "git rev-parse HEAD", returnstdout: true).trim()
+                        gitTag = sh(script: "git tag --points-at HEAD", returnstdout: true).trim()
+                        echo "$gitCommit"
+                        echo "$gitTag"
+                    }
+                }
+            }
+
+        }      
     }
     post {
         always {
