@@ -64,13 +64,19 @@ pipeline {
             
         }  
         stage("Trigger: Delivery Pipeline"){
+
             steps{
                 script{
                     if (currentBuild.currentResult == "SUCCESS" ){
                         gitCommit = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
                         gitTag = sh(script: "git tag --points-at HEAD", returnStdout: true).trim()
-                        echo "$gitCommit"
-                        echo "$gitTag"
+                        build(
+                           job: "reporanger-api-delivery-pipeline",
+                           parameters: [
+                                string(name: "GIT_TAG", value: gitTag)
+                                string(name: "GIT_COMMIT", value: gitCommit)
+                           ]
+                        )
                     }
                 }
             }
