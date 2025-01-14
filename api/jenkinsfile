@@ -73,7 +73,7 @@ pipeline {
                         build(
                            job: "reporanger-api-delivery-pipeline",
                            parameters: [
-                                string(name: "GIT_TAG", value: gitTag)
+                                string(name: "GIT_TAG", value: gitTag),
                                 string(name: "GIT_COMMIT", value: gitCommit)
                            ]
                         )
