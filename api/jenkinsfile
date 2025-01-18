@@ -15,7 +15,8 @@ pipeline {
             steps {
                 dir("api"){
                     script {
-                        appImage = docker.build("reporanger-api:latest")    
+                        gitCommit = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                        appImage = docker.build("reporanger-api:$gitCommit")    
                     }
                     
                 }
