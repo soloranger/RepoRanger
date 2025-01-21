@@ -1,0 +1,26 @@
+pipeline{
+    agent any
+    parameters{
+        string(name:"IMAGE_NAME", trim:true)
+        string(name:"GIT_TAG", trim:true)
+        string(name:"GIT_COMMIT", trim:true)
+
+    }
+    stages{
+        stage("Deliery"){
+            steps{
+                script{
+                    sh "echo Mahdiranger1378515 | docker login --username soloranger  --password-stdin && docker push soloranger/reporanger-api:${GIT_COMMIT}"
+                    //sh "docker push reporanger-api:${GIT_COMMIT}"
+                    
+                    //withDockerRegistry(url:'https://registry-1.docker.io/v2/',credentialsId:'dockerhub'){
+                    //    appImage = docker.image("$params.IMAGE_NAME")
+                    //    appImage.push("latest")
+                    //}
+                     
+                    
+                }
+            }
+        }
+    }
+}
